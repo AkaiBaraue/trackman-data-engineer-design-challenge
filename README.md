@@ -1,12 +1,10 @@
-# TrackMan Data Enigneer Code Challenge
+# TrackMan Data Enigneer System Design Challenge
 
 This is my solution for the [TrackMan Data Engineering System Design Challenge](http://designchallenge.trackmandata.com/). In this README file, I'll discuss the solution I came up with, which components I chose, and why I chose them.
 
-## Solution Approach
+![Full System Design](/images/01_Design_Full.jpg)
 
-For this solution
-
-## The Base
+## The Challenge
 
 The challenge states that it can be approached as a green field project, with only 3 components in place:
 
@@ -17,6 +15,10 @@ The challenge states that it can be approached as a green field project, with on
 The solution needs to read data from multiple different tables in `trackman-backend` and ingest that data into both `dataengineering-db` and `trackman-lake` with a delay of no more than 30 and 60 minutes respectively.
 
 The solution should also take into account that more data soruces might be added in the future.
+
+## Solution Approach
+
+Having worked with data pipelines before, I knew the main challenge was in figuring out which tools to use for the ETL process, and how to integrate it with the source and destination. So I spent a lot of time figuring out what tools AWS provides for handling _Data Ingestion_, _Monitoring_, _Cost Analysis_, _Data Analysis_, and _Data Warehousing_. Once I had a decent grasp of the main tools, I started putting the solution together, trying to account for future sources.
 
 ## Data Ingestion and Orchestration
 
