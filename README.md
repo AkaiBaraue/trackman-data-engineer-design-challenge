@@ -2,7 +2,7 @@
 
 This is my solution for the [TrackMan Data Engineering System Design Challenge](http://designchallenge.trackmandata.com/). In this README file, I'll discuss the solution I came up with, which components I chose, and why I chose them.
 
-![Full System Design](/images/01_Design_Full.jpg)
+![Full System Design](/images/01_Full_Design.jpg)
 
 ## The Challenge
 
@@ -106,6 +106,6 @@ My suggestion is to use _Athena_ to understand the data in the lake, then move i
 
 ## The Full Design
 
-![Full System Design](/images/01_Design_Full.jpg)
+![Full System Design](/images/01_Full_Design.jpg)
 
 Putting all of the above components together results in a data pipeline that can handle a large variety of data sources, with the ability to construct as complex workflows as is required for the data that is being handled. The solution has options for monitoring both the running services as well as any changes made to them, while also providing the ability to analyse cost and monitor spending. Finally, the data can be structured into a highly-scalable data warehouse, once it is time to expose the data to the company's analysts.
