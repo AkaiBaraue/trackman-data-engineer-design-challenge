@@ -20,11 +20,15 @@ The solution should also take into account that more data soruces might be added
 
 Having worked with data pipelines before, I knew the main challenge was in figuring out which tools to use for the ETL process, and how to integrate it with the source and destination. So I spent a lot of time figuring out what tools AWS provides for handling _Data Ingestion_, _Monitoring_, _Cost Analysis_, _Data Analysis_, and _Data Warehousing_. Once I had a decent grasp of the main tools, I started putting the solution together, trying to account for future sources.
 
-## Data Ingestion and Orchestration
+## Data Ingestion, Orchestration, and Computing Capacity
 
-![Data Ingestion and Orchestration](/images/02_Ingestion_and_Orchestration.jpg)
+![Data Ingestion, Orchestration, and Computing Capacity](/images/02_Ingestion_Orchestration_Computing.jpg)
 
-AWS offers a lot of tools for moving data between systems. For this solution, I decided to utilize _Glue_, _Database Migration Service_ (DMS), and _Kinesis_, each of which have different use cases. On top of that, I would use a combination of _Step Functions_ and _Lambda_ to create and manage workflows if they start to grow in complexity.
+AWS offers a lot of tools for moving data between systems. For this solution, I decided to utilize _Glue_, _Database Migration Service_ (DMS), and the _Kinesis_ tools, each of which have different use cases.
+
+Once we want to build more complex workflows, I would use a combination of _Step Functions_ and _Lambda_ to manage that task.
+
+While _Glue_ is a serverless service, _DMS_ and _Kinesis Data Streams_ are not, and need computing instances to run. _EC2_ is the tool for this, with _EC2 Auto Scaling_ making sure to scale the instances up and down as needed.
 
 * Database Migration Service (DMS)
 
@@ -51,6 +55,12 @@ _Step Function_ is a serverless orchestration service, which can integrate with 
 _Lambda_ is a compute service that can run code without the need for managing services, while taking care of overhead of administrating resources, handling system maintenance, etc.. It's useful for a variety of tasks, such as processing files or functioning as backends for applications.
 
 _Step Function_ and _Lambda_ might not be necessary for the data flows this challenge focuses on, but once more sources are added and the data flows become more complex, they're valuable assets for managing the data pipeline.
+
+* EC2 & EC2 Auto Scaling
+
+_EC2_ provides scalable computing capacity, eliminating the need for purchasing hardware up-front. It allows for running as many or few instances as needed, and can host a variety of services. For our data pipeline, _DMS_ would us utilizing _EC2_ for its work. We'd use _EC2 Auto Scaling_ to automatically manage the _EC2_ instances, making sure they scale up when required and scale down when less work is going on.
+
+In the future, we might run _Kinesis Data Streams_ or other services on _EC2_ instances, too.
 
 ## Monitoring
 
