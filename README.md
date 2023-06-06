@@ -26,21 +26,19 @@ Having worked with data pipelines before, I knew the main challenge was in figur
 
 AWS offers a lot of tools for moving data between systems. For this solution, I decided to utilize _Glue_, _Database Migration Service_ (DMS), and the _Kinesis_ tools, each of which have different use cases.
 
-Once we want to build more complex workflows, I would use a combination of _Step Functions_ and _Lambda_ to manage that task.
+For the initial scope of the challenge, workflows will likely not be too complex, but once more sources get on-boarded and the complexity grows, I would use a combination of _Step Functions_ and _Lambda_ to expand on our workflow capabilities.
 
-While _Glue_ is a serverless service, _DMS_ and _Kinesis Data Streams_ are not, and need computing instances to run. _EC2_ is the tool for this, with _EC2 Auto Scaling_ making sure to scale the instances up and down as needed.
-
-* Database Migration Service (DMS)
-
-_DMS_ is a cloud service that allows for migrating data from one relational database to another. On top of one-time migration, _DMS_ can be set up to constantly sync changes from the source to the target, resulting in near-real-time updates to the target. For this solution, _DMS_ would be used for moving data from `trackman-backend` to `dataengineering-db`.
+One thing to keep in mind is that _DMS_ and _Kinesis Data Streams_ (though that can be considered a source) are not serverless and therefore need computing instances to run. _EC2_ is the tool for this, with _EC2 Auto Scaling_ making sure to scale the instances up and down as needed.
 
 * Glue
 
 _Glue_ is a serverless data integration service which can be used to create, run, and monitor ETL pipelines. It can connect to more than 70 data sources, making it a solid choice for general-purpose ETL jobs. Gl_ue also supports running custom Python scripts, so if a source is not supported, custom code can be written to handle it anyway. _Glue_ also has a _Job Bookmark_ functionality, which lets an ETL job persist state information between runs, allowing for a _Glue_ job to only load the newest data from the source. This is great for both cost efficiency (as the job runs for a shorter time) and storage (as data duplication is heavily reduced).
 
-For this solution, _Glue_ would be used to move data from `trackman-backend` to `trackman-lake` with a job that runs every 20 minutes, loading only the newest data due to Job Bookmarks.
+For this solution, _Glue_ would be used to move data from `trackman-backend` to `trackman-lake` with a job that runs every 20 minutes, loading only the newest data due to Job Bookmarks, but due to its versatility, _Glue_ can also be utilized for many future sources.
 
-Due to its versatility, _Glue_ can also be utilized for future sources.
+* Database Migration Service (DMS)
+
+_DMS_ is a cloud service that allows for migrating data from one relational database to another. On top of one-time migration, _DMS_ can be set up to constantly sync changes from the source to the target, resulting in near-real-time updates to the target. For this solution, _DMS_ would be used for moving data from `trackman-backend` to `dataengineering-db`.
 
 * Kinesis
 
@@ -66,11 +64,11 @@ In the future, we might run _Kinesis Data Streams_ or other services on _EC2_ in
 
 ![Monitoring](/images/03_Monitoring.jpg)
 
-When the data starts flowing, it is good to be able to monitor the services themselves and audit any change made to the systems. This is where _CloudWatch_ and _CloudTrail_ comes into the picture.
+When the data starts flowing, we want to be able to monitor the services themselves and audit any change made to the systems. This is where _CloudWatch_ and _CloudTrail_ comes into the picture.
 
 * CloudWatch
 
-_CloudWatch_ monitors the AWS resources and applications that are running. It can collect and track metrics, which can be used to see how the services are doing. It can be used to trigger alarms if something is misbehaving, or make changes to resources based on user-defined rules. It basically provides all the monitoring that is necessary for making sure that the solution is running properly.
+_CloudWatch_ monitors the AWS resources and applications that are running. It can collect and track metrics, which can be used to see how the services are doing. It can be used to trigger alarms if something is misbehaving, or make changes to resources based on user-defined rules. It essentially provides all the monitoring that we need for making sure that the solution is running properly.
 
 * CloudTrail
 
@@ -80,7 +78,7 @@ Where _CloudWatch_ monitors resources and services, _CloudTrail_ monitors everyt
 
 ![Cost Analysis](/images/04_Cost_Analysis.jpg)
 
-Another aspect of data pipelines is the cost of running them. While we will be paying for the services, it is good to know exactly what we're paying for. The solution uses _Cost Explorer_ and _Budgets_ to analyze and manage spending.
+Another aspect of data pipelines is the cost of running them. While we will be paying for the services, it is good to know exactly how much we're spending and on what services that spend is occouring. The solution uses _Cost Explorer_ and _Budgets_ to analyze and manage spending.
 
 * Cost Explorer
 
@@ -94,7 +92,9 @@ _Budgets_ allows for taking action based on the cost of the services running. Va
 
 ![Destinations](/images/05_Destinations.jpg)
 
-The final part of the solution is where the data ends up. Given that `dataengineering-db` and `trackman-lake` are already set up, there's not much to be said on that topic. However, the challenge states that at some point, the ingested data should be made available to analysts in the company through a data warehouse. For this purpose, we'll use _Athena_ to analyze the data, then move it into _Redshift_ in a structured manner, where the analysts can then work with the data.
+The final part of the solution is where the data ends up. Given that `dataengineering-db` and `trackman-lake` are already set up, I will make the assumption that `trackman-lake` is set up with deep storage (known as _Glacier Storage_) and backup capabilities, and leave it at that.
+
+However, the challenge states that at some point the ingested data should be made available to analysts in the company through a data warehouse. For this purpose, we'll use _Athena_ to analyze the data, then move it into _Redshift_ in a structured manner, where the analysts can then work with the data.
 
 * Athena & Redshift
 
